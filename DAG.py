@@ -174,3 +174,31 @@ permissions = []
 for role in str_dag2.users['sys_execute'].roles:
     permissions.append(str_dag2.get_permissions(role))
 print(permissions)  # 输出：[{'execute': 3, 'write': 3, 'read': 3}]
+
+# 去除重复权限
+def merge_permissions(permissions_list):
+    merged_permissions = {}
+    for permissions in permissions_list:
+        for permission, level in permissions.items():
+            if permission not in merged_permissions or level > merged_permissions[permission]:
+                merged_permissions[permission] = level
+    return [merged_permissions]
+
+permissions_list = [{'read': 1}, {'write': 2, 'read': 2}]
+print(merge_permissions(permissions_list))  # 输出：[{'read': 2, 'write': 2}]
+
+
+# CREATE TABLE nodes (
+#     id INT AUTO_INCREMENT PRIMARY KEY,
+#     name VARCHAR(255) NOT NULL,
+#     permissions JSON NOT NULL,
+#     priority INT NOT NULL
+# );
+
+# CREATE TABLE edges (
+#     id INT AUTO_INCREMENT PRIMARY KEY,
+#     from_node_id INT,
+#     to_node_id INT,
+#     FOREIGN KEY (from_node_id) REFERENCES nodes(id),
+#     FOREIGN KEY (to_node_id) REFERENCES nodes(id)
+# );
